@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiwul Ayu Mbak Jannah - Premium Cake & Bakery</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#8B5E3C',
+                        accent: '#D4AF37',
+                        dark: '#2B2B2B',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { scroll-behavior: smooth; background: #FDF6EC; overflow-x: hidden; }
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0.04;
+            mix-blend-mode: multiply;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, rgba(253, 246, 236, 0) 70%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+        const { motion, AnimatePresence } = window.Motion;
+
+        const WHATSAPP_NUMBER = "6285866691953";
+        const SOCIAL_LINKS = {
+            instagram: "https://www.instagram.com/tiwulayumbjannah/",
+            facebook: "https://www.facebook.com/tiwulayumbakjannah",
+            tiktok: "https://www.tiktok.com/@tiwul.ayu.mbakjannah1_",
+            maps_produksi: "https://share.google/sybtWv91Mu5Ei06Fu",
+            maps_toko: "https://maps.app.goo.gl/iQQLuDH91L1Kqain7?g_st=iw"
+        };
+
+        const formatWAUrl = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+
+        const MENU_DATA = [
+            { id: 1, name: "Original Gula Merah", price: 25000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 2, name: "Coklat / Keju", price: 27000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 11, name: "Spesial 3 Rasa", price: 28000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 16, name: "Spesial Chocolatos", price: 30000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 17, name: "Paket Isi 4 Mini", price: 38000, category: "Paket Hemat", image: "assets/TIWUL MINI ISI 4.png" },
+            { id: 18, name: "Wingko Mini Original", price: 30000, category: "Wingko Babat", image: "assets/roti kembang.png" },
+            { id: 22, name: "Wingko Jumbo Original", price: 38000, category: "Wingko Babat", image: "assets/roti kembang.png" },
+            { id: 25, name: "Brownies Tiwul Kukus", price: 38000, category: "Brownies Tiwul", image: "assets/BROWNIS COKLAT.png" },
+            { id: 27, name: "Bolen Tape Tiwul", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN.png" },
+            { id: 30, name: "Strudel", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN .png" },
+            { id: 32, name: "Bolu Pisang Tiwul", price: 35000, category: "Bolu", image: "assets/BOLU.png" },
+            { id: 33, name: "Bolu Besar", price: 15000, category: "Bolu", image: "assets/BOLU.png" },
+        ];
+
+        const CATEGORIES = ["Semua", ...new Set(MENU_DATA.map(item => item.category))];
+
+        const Icon = ({ name, size = 20, className = "text-primary" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    const kebabName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                    iconRef.current.innerHTML = `<i data-lucide="${kebabName}"></i>`;
+                    window.lucide.createIcons({
+                        attrs: { width: size, height: size, class: className, 'stroke-width': 2 }
+                    });
+                }
+            }, [name, size, className]);
+            return <span ref={iconRef} className="inline-flex items-center justify-center"></span>;
+        };
+
+        const MenuCard = ({ item, onAddToCart }) => {
+            const defaultImg = "assets/TIWUL AYU.png";
+            return (
+                <motion.div 
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    whileHover={{ y: -8 }}
+                    className="bg-white/50 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-white/60 shadow-sm flex flex-col group transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+                >
+                    <div className="relative h-56 overflow-hidden cursor-pointer" onClick={() => window.open(formatWAUrl(`Halo Mbak Jannah, saya mau tanya stok ${item.name}`), '_blank')}>
+                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center backdrop-blur-[2px]">
+                           <span className="bg-white text-primary px-6 py-2.5 rounded-full text-xs font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">Tanya via WA</span>
+                        </div>
+                        <img src={item.image || defaultImg} alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                        <p className="text-[10px] text-primary font-bold uppercase tracking-[0.2em] mb-2">{item.category}</p>
+                        <h3 className="text-xl font-serif text-dark mb-4">{item.name}</h3>
+                        <button onClick={() => onAddToCart(item)} className="mt-auto w-full py-3.5 bg-primary text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-dark transition-all active:scale-95 shadow-lg shadow-primary/10">
+                            <Icon name="Plus" size={16} className="text-white" /> Masukkan Keranjang
+                        </button>
+                    </div>
+                </motion.div>
+            );
+        };
+
+        function App() {
+            const [activeCategory, setActiveCategory] = useState("Semua");
+            const [searchTerm, setSearchTerm] = useState("");
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => setIsScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const filteredMenu = useMemo(() => {
+                return MENU_DATA.filter(item => {
+                    const matchesCategory = activeCategory === "Semua" || item.category === activeCategory;
+                    return matchesCategory && item.name.toLowerCase().includes(searchTerm.toLowerCase());
+                });
+            }, [activeCategory, searchTerm]);
+
+            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+
+            const addToCart = (product) => {
+                setCart(prev => {
+                    const existing = prev.find(item => item.id === product.id);
+                    if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+                    return [...prev, { ...product, qty: 1 }];
+                });
+                setIsCartOpen(true);
+            };
+
+            const updateQty = (id, delta) => {
+                setCart(prev => prev.map(item => item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item));
+            };
+
+            const handleCheckout = () => {
+                let msg = "Halo Mbak Jannah, saya mau pesan:\n\n" + cart.map((it, i) => `${i+1}. ${it.name} (x${it.qty})`).join("\n");
+                msg += "\n\nKira-kira total harganya jadi berapa ya Mbak?";
+                window.open(formatWAUrl(msg), '_blank');
+            };
+
+            return (
+                <div className="min-h-screen relative font-sans text-dark overflow-x-hidden">
+                    <div className="grain-overlay" />
+                    <div className="hero-gradient fixed inset-0 pointer-events-none" />
+
+                    {/* Navigation */}
+                    <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${isScrolled ? 'py-4 bg-white/70 backdrop-blur-2xl shadow-sm border-b border-primary/5' : 'py-8 bg-transparent'}`}>
+                        <div className="container mx-auto px-6 flex justify-between items-center">
+                            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
+                                
+                                {/* REVISI LOGO: Menggunakan lingkaran sempurna dan link baru */}
+                                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-xl border border-white/20 flex-shrink-0 overflow-hidden">
+                                    <img 
+                                        src="assets/logo.jpg" 
+                                        alt="Logo" 
+                                        className="w-full h-full object-cover" 
+                                    />
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <span className="font-serif text-xl leading-none text-dark">Mbak Jannah</span>
+                                    <span className="text-[10px] tracking-[0.2em] text-primary font-bold uppercase">Cake & Bakery</span>
+                                </div>
+                            </motion.div>
+
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => setIsCartOpen(true)} className="relative w-12 h-12 flex items-center justify-center bg-white/40 backdrop-blur-lg rounded-2xl border border-white hover:bg-white transition-all shadow-sm">
+                                    <Icon name="ShoppingBag" />
+                                    {totalItems > 0 && (
+                                        <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white">{totalItems}</motion.span>
+                                    )}
+                                </button>
+                                <button onClick={() => setIsMobileMenuOpen(true)} className="w-12 h-12 flex items-center justify-center bg-white/40 backdrop-blur-lg rounded-2xl border border-white hover:bg-white transition-all shadow-sm">
+                                    <Icon name="Menu" />
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section id="home" className="relative min-h-screen flex items-center pt-24 overflow-hidden">
+                        <div className="container mx-auto px-6 text-center relative z-10">
+                            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "circOut" }}>
+                                {/* REVISI: Menghilangkan Wonosalam sesuai permintaan */}
+                                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="inline-block px-5 py-2 rounded-full border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-10 bg-white/30 backdrop-blur-md">
+                                    Premium Bakery • Since 2020 • DEMAK
+                                </motion.span>
+                                <h1 className="text-5xl md:text-8xl lg:text-9xl font-serif text-dark leading-[1] mb-10 tracking-tight">
+                                    Kelezatan Otentik,<br />
+                                    <span className="text-accent italic">Penuh Kehangatan.</span>
+                                </h1>
+                                <p className="max-w-2xl mx-auto text-lg md:text-xl text-dark/60 mb-14 font-light leading-relaxed px-4">
+                                    Menyajikan koleksi roti dan kue premium. Melayani pesanan <span className="text-primary font-bold">satuan</span> hingga <span className="text-primary font-bold">skala banyak</span> untuk hajatan dan momen istimewa Anda.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                                    <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#menu" className="bg-primary text-white px-12 py-5 rounded-full text-sm font-bold shadow-2xl shadow-primary/30 transition-all flex items-center justify-center gap-3 text-center">
+                                        Eksplorasi Menu <Icon name="ChevronRight" size={16} className="text-white" />
+                                    </motion.a>
+                                    <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={`https://wa.me/${WHATSAPP_NUMBER}`} className="bg-white text-primary border border-primary/10 px-12 py-5 rounded-full text-sm font-bold hover:bg-white/80 transition-all flex items-center justify-center gap-3 text-center">
+                                        <Icon name="MessageCircle" size={16} /> Konsultasi Pesanan
+                                    </motion.a>
+                                </div>
+                            </motion.div>
+                        </div>
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute -bottom-24 -right-24 w-96 h-96 border border-primary/5 rounded-full pointer-events-none opacity-50" />
+                    </section>
+
+                    {/* Menu Section */}
+                    <section id="menu" className="py-32 relative">
+                        <div className="container mx-auto px-6">
+                            <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-10">
+                                <SectionHeading title="Katalog Produk" subtitle="Selection" />
+                                <div className="relative w-full md:w-96 group">
+                                    <div className="absolute left-5 top-1/2 -translate-y-1/2 group-focus-within:text-primary transition-colors">
+                                        <Icon name="Search" size={18} className="opacity-40" />
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Cari kue favorit..." 
+                                        value={searchTerm} 
+                                        onChange={(e) => setSearchTerm(e.target.value)} 
+                                        className="w-full pl-14 pr-6 py-4 rounded-3xl bg-white border border-primary/5 focus:outline-none focus:ring-4 focus:ring-primary/5 transition-all text-sm shadow-sm"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 overflow-x-auto pb-12 no-scrollbar px-1">
+                                {CATEGORIES.map(cat => (
+                                    <button 
+                                        key={cat} 
+                                        onClick={() => setActiveCategory(cat)} 
+                                        className={`px-8 py-3.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all duration-500 border ${activeCategory === cat ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20 scale-105' : 'bg-white text-primary border-primary/10 hover:border-primary/40'}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                <AnimatePresence mode="popLayout">
+                                    {filteredMenu.map(item => <MenuCard key={item.id} item={item} onAddToCart={addToCart} />)}
+                                </AnimatePresence>
+                            </motion.div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer id="contact" className="pt-32 pb-12 bg-dark text-white rounded-t-[4rem] relative z-20">
+                        <div className="container mx-auto px-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-16 mb-24">
+                                <div className="lg:col-span-2 space-y-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white shadow-xl border border-white/20 flex-shrink-0 overflow-hidden">
+                                            <img 
+                                                src="assets/logo.jpg" 
+                                                alt="Logo" 
+                                                className="w-full h-full object-cover" 
+                                            />
+                                        </div>
+                                        <h4 className="text-3xl font-serif">Cake & Bakery Mbak Jannah</h4>
+                                    </div>
+                                    <p className="text-white/40 max-w-sm font-light leading-relaxed">Penyedia kue dan bakery premium. Menghadirkan rasa tradisional yang elegan untuk kebahagiaan Anda.</p>
+                                    
+                                    <div className="flex gap-4">
+                                        <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
+                                        <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
+                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
+                                        <SocialIcon name="Whatsapp" icon="MessageCircle" href={`https://wa.me/${WHATSAPP_NUMBER}`} />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-8">
+                                    <h5 className="text-xs font-black uppercase tracking-[0.3em] text-accent">Alamat & Lokasi</h5>
+                                    <div className="space-y-6 text-sm text-white/50 font-light">
+                                        <div className="flex flex-col gap-4">
+                                            <p className="flex gap-4"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Pangkalan, Kalianyar, Kec. Wonosalam, Kabupaten Demak, Jawa Tengah 59571</p>
+                                            <div className="flex flex-col gap-2 pl-9">
+                                                <a href={SOCIAL_LINKS.maps_toko} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                    <Icon name="Navigation" size={12} className="text-accent" /> Lokasi Toko Utama
+                                                </a>
+                                                <a href={SOCIAL_LINKS.maps_produksi} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                    <Icon name="Factory" size={12} className="text-accent" /> Rumah Produksi
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <p className="flex gap-4"><Icon name="Phone" size={20} className="text-accent shrink-0" /> +62 858-6669-1953</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-8">
+                                    <h5 className="text-xs font-black uppercase tracking-[0.3em] text-accent">Jam Operasional</h5>
+                                    <div className="p-6 bg-white/5 rounded-3xl border border-white/5">
+                                        <p className="font-serif text-lg mb-2 flex items-center gap-2"><Icon name="Clock" size={18} className="text-accent" /> Buka Setiap Hari</p>
+                                        <p className="text-white/40 text-sm">09:00 Pagi — 20:00 Malam</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-30">
+                                <p className="text-[10px] tracking-[0.5em] uppercase text-center md:text-left">© 2025 Cake & Bakery Mbak Jannah</p>
+                                <p className="text-[10px] tracking-[0.5em] uppercase">Terima Kasih Atas Kunjungan Anda</p>
+                            </div>
+                        </div>
+                    </footer>
+
+                    {/* Floating WhatsApp FAB */}
+                    <motion.a 
+                        initial={{ scale: 0 }} animate={{ scale: 1 }} whileHover={{ scale: 1.1 }}
+                        href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank"
+                        className="fixed bottom-10 right-10 z-[150] w-16 h-16 bg-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white active:scale-90 transition-transform"
+                    >
+                        <Icon name="MessageCircle" size={32} className="text-white" />
+                    </motion.a>
+
+                    {/* Cart Sidebar */}
+                    <AnimatePresence>
+                        {isCartOpen && (
+                            <>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="fixed inset-0 bg-dark/60 backdrop-blur-md z-[200]" />
+                                <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25 }} className="fixed top-0 right-0 h-full w-full max-w-lg bg-[#FDF6EC] z-[210] shadow-2xl flex flex-col border-l border-primary/10">
+                                    <div className="p-8 border-b border-primary/10 flex justify-between items-center bg-white">
+                                        <h2 className="text-3xl font-serif text-dark">Pesanan Anda</h2>
+                                        <button onClick={() => setIsCartOpen(false)} className="w-12 h-12 flex items-center justify-center bg-primary/5 rounded-full hover:bg-primary/10 transition-colors"><Icon name="X" className="text-dark" /></button>
+                                    </div>
+                                    <div className="flex-grow overflow-y-auto p-8 space-y-6">
+                                        {cart.length === 0 ? <div className="h-full flex flex-col items-center justify-center opacity-30 text-center space-y-4 text-dark"><Icon name="ShoppingBag" size={64} /><p>Keranjang Anda Kosong</p></div> : 
+                                            cart.map(item => (
+                                                <div key={item.id} className="flex gap-6 bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5">
+                                                    <div className="flex-grow">
+                                                        <h4 className="font-serif text-xl mb-4 text-dark">{item.name}</h4>
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center gap-4 bg-primary/5 px-4 py-2 rounded-xl">
+                                                                <button onClick={() => updateQty(item.id, -1)} className="hover:text-primary transition-colors text-dark"><Icon name="Minus" size={14} /></button>
+                                                                <span className="font-bold text-sm w-4 text-center text-dark">{item.qty}</span>
+                                                                <button onClick={() => updateQty(item.id, 1)} className="hover:text-primary transition-colors text-dark"><Icon name="Plus" size={14} /></button>
+                                                            </div>
+                                                            <button onClick={() => setCart(prev => prev.filter(it => it.id !== item.id))} className="text-red-400 hover:text-red-600 transition-colors"><Icon name="Trash2" size={18} className="text-red-400" /></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                    {cart.length > 0 && (
+                                        <div className="p-8 bg-white border-t border-primary/10 space-y-6 shadow-[0_-10px_40px_rgba(139,94,60,0.05)]">
+                                            <div className="flex justify-between items-center text-xl font-serif text-dark">
+                                                <span>Total Estimasi</span>
+                                                <span className="text-primary font-bold text-base">Dihitung Admin</span>
+                                            </div>
+                                            <button onClick={handleCheckout} className="w-full py-5 bg-primary text-white rounded-[1.5rem] font-bold text-lg flex items-center justify-center gap-4 hover:bg-dark transition-all shadow-xl shadow-primary/20">
+                                                <Icon name="Send" size={20} className="text-white" /> Tanya Total & Kirim Pesanan
+                                            </button>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Mobile Navigation Sidebar */}
+                    <AnimatePresence>
+                        {isMobileMenuOpen && (
+                            <>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileMenuOpen(false)} className="fixed inset-0 bg-dark/60 backdrop-blur-md z-[300]" />
+                                <motion.div initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'spring', damping: 25 }} className="fixed top-0 left-0 h-full w-[85%] max-w-sm bg-primary z-[310] flex flex-col p-10 text-white shadow-2xl">
+                                    <button onClick={() => setIsMobileMenuOpen(false)} className="self-end p-4 bg-white/10 rounded-full mb-16 hover:bg-white/20 transition-colors text-white"><Icon name="X" className="text-white" /></button>
+                                    <div className="flex flex-col gap-10 text-4xl font-serif">
+                                        <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent transition-colors">Beranda</a>
+                                        <a href="#menu" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent transition-colors">Menu</a>
+                                        <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent transition-colors">Kontak</a>
+                                    </div>
+                                    <div className="mt-auto pt-10 border-t border-white/10 flex gap-6 justify-center">
+                                        <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
+                                        <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
+                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
+                                    </div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        }
+
+        const SectionHeading = ({ title, subtitle }) => (
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+                <span className="text-primary text-[11px] font-black uppercase tracking-[0.4em] mb-4 block">{subtitle}</span>
+                <h2 className="text-4xl md:text-6xl font-serif text-dark leading-tight">{title}</h2>
+            </motion.div>
+        );
+
+        const SocialIcon = ({ name, icon, href }) => (
+            <motion.a 
+                whileHover={{ y: -5, backgroundColor: '#8B5E3C' }} 
+                href={href} target="_blank"
+                className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all bg-white/5 shadow-sm"
+            >
+                <Icon name={icon || name} size={20} className="text-inherit" />
+            </motion.a>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
