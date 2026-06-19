@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tiwul Ayu Mbak Jannah - Premium Cake & Bakery</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/mbak%20jannah%20cake%20%26%20bakery.png">
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +13,7 @@
     <!-- Libraries -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -70,27 +67,24 @@
             facebook: "https://www.facebook.com/tiwulayumbakjannah",
             tiktok: "https://www.tiktok.com/@tiwul.ayu.mbakjannah1_",
             maps_produksi: "https://share.google/sybtWv91Mu5Ei06Fu",
-            maps_toko: "https://maps.app.goo.gl/iQQLuDH91L1Kqain7?g_st=iw",
-            maps_outlet3: "https://maps.app.goo.gl/Dz8Dpok4sAuPWEfg8?g_st=ic"
+            maps_toko: "https://maps.app.goo.gl/iQQLuDH91L1Kqain7?g_st=iw"
         };
 
         const formatWAUrl = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
         const MENU_DATA = [
-            { id: 1, name: "Original Gula Merah", price: 25000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
-            { id: 2, name: "Coklat / Keju", price: 27000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
-            { id: 11, name: "Spesial 3 Rasa", price: 28000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
-            { id: 16, name: "Spesial Chocolatos", price: 30000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
-            { id: 17, name: "Paket Isi 4 Mini", price: 38000, category: "Paket Hemat", image: "assets/TIWUL_MINI_ISI_4.jpg" },
-            { id: 18, name: "Wingko Mini Original", price: 30000, category: "Wingko Babat", image: "assets/ROTI_KEMBANG.jpg" },
-            { id: 22, name: "Wingko Jumbo Original", price: 38000, category: "Wingko Babat", image: "assets/ROTI_KEMBANG.jpg" },
-            { id: 25, name: "Brownies Tiwul Kukus", price: 38000, category: "Brownies Tiwul", image: "assets/BROWNIS_COKLAT.jpg" },
-            { id: 27, name: "Bolen Tape Tiwul", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN.jpg" },
-            { id: 30, name: "Strudel", price: 35000, category: "Bolen & Strudel", image: "assets/STRUDEL.jpg" },
-            { id: 32, name: "Bolu Pisang Tiwul", price: 35000, category: "Bolu", image: "assets/BOLU.jpg" },
-            { id: 33, name: "Bolu Besar", price: 15000, category: "Bolu", image: "assets/BOLU.jpg" },
-            { id: 34, name: "Bolu Tiwul Original", price: 25000, category: "Bolu", image: "assets/bolu tiwul original.jpeg" },
-            { id: 35, name: "Bolu Tiwul Pandan", price: 25000, category: "Bolu", image: "assets/bolu tiwul pandan.jpeg" },
+            { id: 1, name: "Original Gula Merah", price: 25000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 2, name: "Coklat / Keju", price: 27000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 11, name: "Spesial 3 Rasa", price: 28000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 16, name: "Spesial Chocolatos", price: 30000, category: "Tiwul Jumbo", image: "assets/TIWUL AYU.png" },
+            { id: 17, name: "Paket Isi 4 Mini", price: 38000, category: "Paket Hemat", image: "assets/TIWUL MINI ISI 4.png" },
+            { id: 18, name: "Wingko Mini Original", price: 30000, category: "Wingko Babat", image: "assets/roti kembang.png" },
+            { id: 22, name: "Wingko Jumbo Original", price: 38000, category: "Wingko Babat", image: "assets/roti kembang.png" },
+            { id: 25, name: "Brownies Tiwul Kukus", price: 38000, category: "Brownies Tiwul", image: "assets/BROWNIS COKLAT.png" },
+            { id: 27, name: "Bolen Tape Tiwul", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN.png" },
+            { id: 30, name: "Strudel", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN .png" },
+            { id: 32, name: "Bolu Pisang Tiwul", price: 35000, category: "Bolu", image: "assets/BOLU.png" },
+            { id: 33, name: "Bolu Besar", price: 15000, category: "Bolu", image: "assets/BOLU.png" },
         ];
 
         const CATEGORIES = ["Semua", ...new Set(MENU_DATA.map(item => item.category))];
@@ -302,49 +296,29 @@
                                     </div>
                                     <p className="text-white/40 max-w-sm font-light leading-relaxed">Penyedia kue dan bakery premium. Menghadirkan rasa tradisional yang elegan untuk kebahagiaan Anda.</p>
                                     
-                                    <div className="flex gap-6 mt-4">
+                                    <div className="flex gap-4">
                                         <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
                                         <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
-                                        <SocialIcon name="Tiktok" href={SOCIAL_LINKS.tiktok} />
-                                        <SocialIcon name="Whatsapp" href={`https://wa.me/${WHATSAPP_NUMBER}`} />
+                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
+                                        <SocialIcon name="Whatsapp" icon="MessageCircle" href={`https://wa.me/${WHATSAPP_NUMBER}`} />
                                     </div>
                                 </div>
 
                                 <div className="space-y-8">
                                     <h5 className="text-xs font-black uppercase tracking-[0.3em] text-accent">Alamat & Lokasi</h5>
                                     <div className="space-y-6 text-sm text-white/50 font-light">
-                                        <div className="flex flex-col gap-6">
-                                            <div>
-                                                <p className="flex gap-4 font-semibold text-white mb-2"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Toko Utama & Produksi</p>
-                                                <p className="pl-9 text-xs leading-relaxed">Pangkalan, Kalianyar, Kec. Wonosalam, Kabupaten Demak, Jawa Tengah 59571</p>
-                                                <div className="flex flex-col gap-1.5 pl-9 mt-2 text-xs">
-                                                    <a href={SOCIAL_LINKS.maps_toko} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                        <Icon name="Navigation" size={12} className="text-accent" /> Lokasi Toko Utama
-                                                    </a>
-                                                    <a href={SOCIAL_LINKS.maps_produksi} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                        <Icon name="Factory" size={12} className="text-accent" /> Rumah Produksi
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="border-t border-white/5 pt-4">
-                                                <p className="flex gap-4 font-semibold text-white mb-2"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Outlet 3 (Kebonagung)</p>
-                                                <p className="pl-9 text-xs leading-relaxed mb-3">Jl. Gubug Purwodadi, Mrapi, Kebonagung, Kec. Kebonagung, Kabupaten Demak, Jawa Tengah 58162</p>
-                                                <div className="pl-9 mb-3">
-                                                    <iframe 
-                                                        src="https://maps.google.com/maps?q=Jl.%20Gubug%20Purwodadi,%20Mrapi,%20Kebonagung,%20Kec.%20Kebonagung,%20Kabupaten%20Demak,%20Jawa%20Tengah%2058162&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                                                        className="w-full h-36 rounded-2xl border border-white/10 shadow-inner opacity-75 hover:opacity-100 transition-opacity" 
-                                                        allowFullScreen="" 
-                                                        loading="lazy"
-                                                    ></iframe>
-                                                </div>
-                                                <div className="flex flex-col gap-1.5 pl-9 text-xs">
-                                                    <a href={SOCIAL_LINKS.maps_outlet3} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                        <Icon name="Store" size={12} className="text-accent" /> Buka Google Maps
-                                                    </a>
-                                                </div>
+                                        <div className="flex flex-col gap-4">
+                                            <p className="flex gap-4"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Pangkalan, Kalianyar, Kec. Wonosalam, Kabupaten Demak, Jawa Tengah 59571</p>
+                                            <div className="flex flex-col gap-2 pl-9">
+                                                <a href={SOCIAL_LINKS.maps_toko} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                    <Icon name="Navigation" size={12} className="text-accent" /> Lokasi Toko Utama
+                                                </a>
+                                                <a href={SOCIAL_LINKS.maps_produksi} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                    <Icon name="Factory" size={12} className="text-accent" /> Rumah Produksi
+                                                </a>
                                             </div>
                                         </div>
-                                        <p className="flex gap-4 border-t border-white/5 pt-4"><Icon name="Phone" size={20} className="text-accent shrink-0" /> +62 858-6669-1953</p>
+                                        <p className="flex gap-4"><Icon name="Phone" size={20} className="text-accent shrink-0" /> +62 858-6669-1953</p>
                                     </div>
                                 </div>
 
@@ -433,7 +407,7 @@
                                     <div className="mt-auto pt-10 border-t border-white/10 flex gap-6 justify-center">
                                         <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
                                         <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
-                                        <SocialIcon name="Tiktok" href={SOCIAL_LINKS.tiktok} />
+                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
                                     </div>
                                 </motion.div>
                             </>
@@ -450,47 +424,15 @@
             </motion.div>
         );
 
-        const SocialIcon = ({ name, href }) => {
-            const icons = {
-                Facebook: (
-                    <svg viewBox="0 0 32 32" className="w-6 h-6 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10">
-                        <path d="M23,31H9c-4.4,0-8-3.6-8-8V9c0-4.4,3.6-8,8-8h14c4.4,0,8,3.6,8,8v14C31,27.4,27.4,31,23,31z"/>
-                        <path d="M26,16h-5v-2.8c0-0.7,0.5-1.2,1.2-1.2H25V7h-4h0c-2.8,0-5,2.2-5,5v0v4h-4v5h4v10h5V21h3L26,16z"/>
-                    </svg>
-                ),
-                Instagram: (
-                    <svg viewBox="0 0 32 32" className="w-6 h-6 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10">
-                        <path d="M23,31H9c-4.4,0-8-3.6-8-8V9c0-4.4,3.6-8,8-8h14c4.4,0,8,3.6,8,8v14C31,27.4,27.4,31,23,31z"/>
-                        <circle cx="16" cy="16" r="7"/>
-                        <circle cx="24" cy="7" r="1"/>
-                    </svg>
-                ),
-                Tiktok: (
-                    <svg viewBox="0 0 32 32" className="w-6 h-6 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10">
-                        <path d="M23,31H9c-4.4,0-8-3.6-8-8V9c0-4.4,3.6-8,8-8h14c4.4,0,8,3.6,8,8v14C31,27.4,27.4,31,23,31z"/>
-                        <path d="M22,10c-2.2,0-4,1.8-4,4v6c0,2.2-1.8,4-4,4s-4-1.8-4-4s1.8-4,4-4c1.1,0,2.1,0.5,2.8,1.2"/>
-                    </svg>
-                ),
-                Whatsapp: (
-                    <svg viewBox="0 0 32 32" className="w-6 h-6 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10">
-                        <path d="M17,1C9.3,1,3,7.3,3,15c0,3.4,1.3,6.6,3.3,9L4,31l7.3-3.2C13,28.6,15,29,17,29c7.7,0,14-6.3,14-14S24.7,1,17,1z"/>
-                        <g transform="translate(1, 1)">
-                            <path d="M23.7,19.1c0.3-0.9,0.3-1.6,0.2-1.8c-0.1-0.2-0.3-0.2-0.7-0.4c-0.4-0.2-2.2-1.1-2.5-1.2 c-0.3-0.1-0.7-0.1-0.9,0.3c-0.4,0.5-0.7,1-1,1.3c-0.2,0.2-0.6,0.3-0.9,0.1c-0.4-0.2-1.6-0.6-3-1.8c-1.1-1-1.8-2.2-2.1-2.6 c-0.2-0.4,0-0.6,0.2-0.8c0.2-0.2,0.4-0.4,0.6-0.6c0.2-0.2,0.3-0.3,0.4-0.6c0.1-0.2,0-0.5-0.1-0.7c-0.1-0.2-0.8-2-1.1-2.7 c-0.2-0.6-0.4-0.6-0.8-0.6c-0.1,0-0.3,0-0.4,0c-0.5,0-1,0.1-1.3,0.5C9.9,7.9,9,8.8,9,10.6c0,1.8,1.3,3.6,1.5,3.8 c0.2,0.2,2.6,4,6.3,5.6c2.9,1.2,3.8,1.1,4.4,1C22.2,20.7,23.4,20,23.7,19.1L23.7,19.1z"/>
-                        </g>
-                    </svg>
-                )
-            };
-            
-            return (
-                <motion.a 
-                    whileHover={{ scale: 1.2, y: -3 }} 
-                    href={href} target="_blank"
-                    className="text-white/40 hover:text-accent transition-all duration-300 flex items-center justify-center"
-                >
-                    {icons[name]}
-                </motion.a>
-            );
-        };
+        const SocialIcon = ({ name, icon, href }) => (
+            <motion.a 
+                whileHover={{ y: -5, backgroundColor: '#8B5E3C' }} 
+                href={href} target="_blank"
+                className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all bg-white/5 shadow-sm"
+            >
+                <Icon name={icon || name} size={20} className="text-inherit" />
+            </motion.a>
+        );
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
