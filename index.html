@@ -6,7 +6,7 @@
     <title>Tiwul Ayu Mbak Jannah - Premium Cake & Bakery</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="icon" type="image/png" href="assets/mbak%20jannah%20cake%20%26%20bakery.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -302,11 +302,11 @@
                                     </div>
                                     <p className="text-white/40 max-w-sm font-light leading-relaxed">Penyedia kue dan bakery premium. Menghadirkan rasa tradisional yang elegan untuk kebahagiaan Anda.</p>
                                     
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-6 mt-4">
                                         <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
                                         <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
-                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
-                                        <SocialIcon name="Whatsapp" icon="MessageCircle" href={`https://wa.me/${WHATSAPP_NUMBER}`} />
+                                        <SocialIcon name="Tiktok" href={SOCIAL_LINKS.tiktok} />
+                                        <SocialIcon name="Whatsapp" href={`https://wa.me/${WHATSAPP_NUMBER}`} />
                                     </div>
                                 </div>
 
@@ -328,10 +328,18 @@
                                             </div>
                                             <div className="border-t border-white/5 pt-4">
                                                 <p className="flex gap-4 font-semibold text-white mb-2"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Outlet 3 (Kebonagung)</p>
-                                                <p className="pl-9 text-xs leading-relaxed">Jl. Gubug Purwodadi, Mrapi, Kebonagung, Kec. Kebonagung, Kabupaten Demak, Jawa Tengah 58162</p>
-                                                <div className="flex flex-col gap-1.5 pl-9 mt-2 text-xs">
+                                                <p className="pl-9 text-xs leading-relaxed mb-3">Jl. Gubug Purwodadi, Mrapi, Kebonagung, Kec. Kebonagung, Kabupaten Demak, Jawa Tengah 58162</p>
+                                                <div className="pl-9 mb-3">
+                                                    <iframe 
+                                                        src="https://maps.google.com/maps?q=Jl.%20Gubug%20Purwodadi,%20Mrapi,%20Kebonagung,%20Kec.%20Kebonagung,%20Kabupaten%20Demak,%20Jawa%20Tengah%2058162&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                                                        className="w-full h-36 rounded-2xl border border-white/10 shadow-inner opacity-75 hover:opacity-100 transition-opacity" 
+                                                        allowFullScreen="" 
+                                                        loading="lazy"
+                                                    ></iframe>
+                                                </div>
+                                                <div className="flex flex-col gap-1.5 pl-9 text-xs">
                                                     <a href={SOCIAL_LINKS.maps_outlet3} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                        <Icon name="Store" size={12} className="text-accent" /> Lokasi Outlet 3
+                                                        <Icon name="Store" size={12} className="text-accent" /> Buka Google Maps
                                                     </a>
                                                 </div>
                                             </div>
@@ -425,7 +433,7 @@
                                     <div className="mt-auto pt-10 border-t border-white/10 flex gap-6 justify-center">
                                         <SocialIcon name="Facebook" href={SOCIAL_LINKS.facebook} />
                                         <SocialIcon name="Instagram" href={SOCIAL_LINKS.instagram} />
-                                        <SocialIcon name="Tiktok" icon="Video" href={SOCIAL_LINKS.tiktok} />
+                                        <SocialIcon name="Tiktok" href={SOCIAL_LINKS.tiktok} />
                                     </div>
                                 </motion.div>
                             </>
@@ -442,15 +450,27 @@
             </motion.div>
         );
 
-        const SocialIcon = ({ name, icon, href }) => (
-            <motion.a 
-                whileHover={{ y: -5, backgroundColor: '#8B5E3C' }} 
-                href={href} target="_blank"
-                className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all bg-white/5 shadow-sm"
-            >
-                <Icon name={icon || name} size={20} className="text-inherit" />
-            </motion.a>
-        );
+        const SOCIAL_SVG_PATHS = {
+            Facebook: "M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z",
+            Instagram: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z",
+            Tiktok: "M12.525.02c1.31-.03 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.22.95 1.18 2.3 2.01 3.82 2.35v3.91c-1.89-.09-3.71-.85-5.08-2.18-.11-.11-.21-.22-.31-.33v7.37c.05 1.9-.53 3.79-1.68 5.25-1.46 1.89-3.86 3.04-6.32 2.99-2.89.08-5.71-1.64-6.94-4.22-1.39-2.81-.88-6.42 1.25-8.68 1.63-1.78 4.07-2.6 6.43-2.19v3.96c-1.3-.39-2.78-.1-3.83.74-.95.73-1.43 1.95-1.29 3.16.1 1.24.87 2.35 1.98 2.89 1.19.61 2.68.49 3.73-.31.81-.6 1.27-1.57 1.26-2.58V.02z",
+            Whatsapp: "M19.071 4.929A10 10 0 002.83 18.064L1 23l5.053-1.326A9.972 9.972 0 0010 22a10 10 0 009.071-17.071zM10 20.25a8.21 8.21 0 01-4.186-1.144l-.3-.178-3.111.816.83-3.033-.196-.312a8.243 8.243 0 0113.882-7.51 8.253 8.253 0 01-6.919 11.361zm4.515-6.17c-.247-.124-1.465-.722-1.692-.805-.226-.082-.392-.124-.556.124-.165.247-.639.805-.783.97-.144.164-.288.185-.536.061-.247-.124-1.043-.383-1.987-1.226-.733-.655-1.229-1.464-1.373-1.711-.144-.247-.015-.38.109-.504.111-.112.247-.289.37-.433.124-.144.165-.247.247-.412.083-.165.042-.309-.02-.433-.062-.124-.556-1.34-.763-1.835-.201-.484-.405-.418-.556-.426-.144-.008-.309-.01-.473-.01a.91.91 0 00-.66.309c-.227.247-.866.845-.866 2.062 0 1.216.886 2.392.99 2.536.124.165 1.742 2.66 4.223 3.731.59.255 1.05.407 1.41.52.593.189 1.133.162 1.56.098.476-.072 1.465-.598 1.67-.176.207.422.207.783.155.907-.052.124-.289.247-.536.124z"
+        };
+
+        const SocialIcon = ({ name, href }) => {
+            const svgPath = SOCIAL_SVG_PATHS[name];
+            return (
+                <motion.a 
+                    whileHover={{ scale: 1.2, y: -3 }} 
+                    href={href} target="_blank"
+                    className="text-white/40 hover:text-accent transition-all duration-300 flex items-center justify-center"
+                >
+                    <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path d={svgPath} />
+                    </svg>
+                </motion.a>
+            );
+        };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
