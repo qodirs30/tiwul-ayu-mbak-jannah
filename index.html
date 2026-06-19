@@ -248,6 +248,7 @@
             const [isCartOpen, setIsCartOpen] = useState(false);
             const [isScrolled, setIsScrolled] = useState(false);
             const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+            const constraintsRef = useRef(null);
 
             useEffect(() => {
                 const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -506,17 +507,22 @@
                     </footer>
 
                     {/* Floating WhatsApp FAB */}
-                    <motion.a 
-                        initial={{ scale: 0 }} 
-                        animate={{ scale: 1 }} 
-                        whileHover={{ scale: 1.1 }}
-                        href={`https://wa.me/${WHATSAPP_NUMBER}`} 
-                        target="_blank"
-                        className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[150] w-16 h-16 bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white active:scale-95 transition-all whatsapp-pulse"
-                        title="Hubungi WhatsApp"
-                    >
-                        <img src="assets/whatsapp%20icone.png" alt="WhatsApp" className="w-10 h-10 object-contain" />
-                    </motion.a>
+                    <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-[150]">
+                        <motion.a 
+                            drag
+                            dragConstraints={constraintsRef}
+                            initial={{ scale: 0 }} 
+                            animate={{ scale: 1 }} 
+                            whileHover={{ scale: 1.1 }}
+                            whileDrag={{ scale: 1.15 }}
+                            href={`https://wa.me/${WHATSAPP_NUMBER}`} 
+                            target="_blank"
+                            className="pointer-events-auto absolute bottom-6 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white active:scale-95 transition-all whatsapp-pulse cursor-grab"
+                            title="Hubungi WhatsApp"
+                        >
+                            <img src="assets/whatsapp%20icone.png" alt="WhatsApp" className="w-10 h-10 object-contain pointer-events-none" />
+                        </motion.a>
+                    </div>
 
                     {/* Cart Sidebar */}
                     <AnimatePresence>
