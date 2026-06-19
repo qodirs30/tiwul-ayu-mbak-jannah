@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tiwul Ayu Mbak Jannah - Premium Cake & Bakery</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +70,8 @@
             facebook: "https://www.facebook.com/tiwulayumbakjannah",
             tiktok: "https://www.tiktok.com/@tiwul.ayu.mbakjannah1_",
             maps_produksi: "https://share.google/sybtWv91Mu5Ei06Fu",
-            maps_toko: "https://maps.app.goo.gl/iQQLuDH91L1Kqain7?g_st=iw"
+            maps_toko: "https://maps.app.goo.gl/iQQLuDH91L1Kqain7?g_st=iw",
+            maps_outlet3: "https://maps.app.goo.gl/Dz8Dpok4sAuPWEfg8?g_st=ic"
         };
 
         const formatWAUrl = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
@@ -85,6 +89,8 @@
             { id: 30, name: "Strudel", price: 35000, category: "Bolen & Strudel", image: "assets/BOLEN .png" },
             { id: 32, name: "Bolu Pisang Tiwul", price: 35000, category: "Bolu", image: "assets/BOLU.png" },
             { id: 33, name: "Bolu Besar", price: 15000, category: "Bolu", image: "assets/BOLU.png" },
+            { id: 34, name: "Bolu Tiwul Original", price: 25000, category: "Bolu", image: "assets/bolu tiwul original.jpeg" },
+            { id: 35, name: "Bolu Tiwul Pandan", price: 25000, category: "Bolu", image: "assets/bolu tiwul pandan.jpeg" },
         ];
 
         const CATEGORIES = ["Semua", ...new Set(MENU_DATA.map(item => item.category))];
@@ -307,18 +313,30 @@
                                 <div className="space-y-8">
                                     <h5 className="text-xs font-black uppercase tracking-[0.3em] text-accent">Alamat & Lokasi</h5>
                                     <div className="space-y-6 text-sm text-white/50 font-light">
-                                        <div className="flex flex-col gap-4">
-                                            <p className="flex gap-4"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Pangkalan, Kalianyar, Kec. Wonosalam, Kabupaten Demak, Jawa Tengah 59571</p>
-                                            <div className="flex flex-col gap-2 pl-9">
-                                                <a href={SOCIAL_LINKS.maps_toko} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                    <Icon name="Navigation" size={12} className="text-accent" /> Lokasi Toko Utama
-                                                </a>
-                                                <a href={SOCIAL_LINKS.maps_produksi} target="_blank" className="text-accent hover:underline flex items-center gap-2">
-                                                    <Icon name="Factory" size={12} className="text-accent" /> Rumah Produksi
-                                                </a>
+                                        <div className="flex flex-col gap-6">
+                                            <div>
+                                                <p className="flex gap-4 font-semibold text-white mb-2"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Toko Utama & Produksi</p>
+                                                <p className="pl-9 text-xs leading-relaxed">Pangkalan, Kalianyar, Kec. Wonosalam, Kabupaten Demak, Jawa Tengah 59571</p>
+                                                <div className="flex flex-col gap-1.5 pl-9 mt-2 text-xs">
+                                                    <a href={SOCIAL_LINKS.maps_toko} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                        <Icon name="Navigation" size={12} className="text-accent" /> Lokasi Toko Utama
+                                                    </a>
+                                                    <a href={SOCIAL_LINKS.maps_produksi} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                        <Icon name="Factory" size={12} className="text-accent" /> Rumah Produksi
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="border-t border-white/5 pt-4">
+                                                <p className="flex gap-4 font-semibold text-white mb-2"><Icon name="MapPin" size={20} className="text-accent shrink-0" /> Outlet 3 (Kebonagung)</p>
+                                                <p className="pl-9 text-xs leading-relaxed">Jl. Gubug Purwodadi, Mrapi, Kebonagung, Kec. Kebonagung, Kabupaten Demak, Jawa Tengah 58162</p>
+                                                <div className="flex flex-col gap-1.5 pl-9 mt-2 text-xs">
+                                                    <a href={SOCIAL_LINKS.maps_outlet3} target="_blank" className="text-accent hover:underline flex items-center gap-2">
+                                                        <Icon name="Store" size={12} className="text-accent" /> Lokasi Outlet 3
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                        <p className="flex gap-4"><Icon name="Phone" size={20} className="text-accent shrink-0" /> +62 858-6669-1953</p>
+                                        <p className="flex gap-4 border-t border-white/5 pt-4"><Icon name="Phone" size={20} className="text-accent shrink-0" /> +62 858-6669-1953</p>
                                     </div>
                                 </div>
 
