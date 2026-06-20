@@ -21,6 +21,11 @@
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Firebase SDK (Compat Mode untuk kemudahan pemula) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -94,7 +99,7 @@
 
         const formatWAUrl = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
-        const MENU_DATA = [
+        const FALLBACK_MENU = [
             { id: 1, name: "Original Gula Merah", price: 25000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
             { id: 2, name: "Coklat / Keju", price: 27000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
             { id: 11, name: "Spesial 3 Rasa", price: 28000, category: "Tiwul Jumbo", image: "assets/TIWUL_AYU.jpg" },
@@ -110,8 +115,6 @@
             { id: 34, name: "Bolu Tiwul Original", price: 25000, category: "Bolu", image: "assets/bolu tiwul original.jpeg" },
             { id: 35, name: "Bolu Tiwul Pandan", price: 25000, category: "Bolu", image: "assets/bolu tiwul pandan.jpeg" },
         ];
-
-        const CATEGORIES = ["Semua", ...new Set(MENU_DATA.map(item => item.category))];
 
         const Icon = ({ name, size = 20, className = "text-primary", strokeWidth = 2 }) => {
             const icons = {
@@ -249,6 +252,52 @@
             const [isScrolled, setIsScrolled] = useState(false);
             const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
             const constraintsRef = useRef(null);
+            const [menuData, setMenuData] = useState([]);
+
+            // Load menu data dynamically from Firebase Firestore
+            useEffect(() => {
+                let unsubscribe = () => {};
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        const db = firebase.firestore();
+                        unsubscribe = db.collection("menu_makanan")
+                            .onSnapshot((snapshot) => {
+                                const items = [];
+                                snapshot.forEach((doc) => {
+                                    const data = doc.data();
+                                    items.push({
+                                        id: doc.id,
+                                        name: data.nama,
+                                        price: Number(data.harga),
+                                        category: data.category || "Lainnya",
+                                        image: data.foto_url
+                                    });
+                                });
+                                
+                                if (items.length > 0) {
+                                    setMenuData(items);
+                                } else {
+                                    setMenuData(FALLBACK_MENU);
+                                }
+                            }, (error) => {
+                                console.error("Error fetching Firestore data, using fallback:", error);
+                                setMenuData(FALLBACK_MENU);
+                            });
+                    } else {
+                        console.warn("Firebase SDK not loaded, using fallback menu.");
+                        setMenuData(FALLBACK_MENU);
+                    }
+                } catch (e) {
+                    console.error("Firestore initialization error, using fallback:", e);
+                    setMenuData(FALLBACK_MENU);
+                }
+                return () => unsubscribe();
+            }, []);
+
+            // Dynamic categories based on fetched menuData
+            const categories = useMemo(() => {
+                return ["Semua", ...new Set(menuData.map(item => item.category))];
+            }, [menuData]);
 
             useEffect(() => {
                 const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -257,11 +306,11 @@
             }, []);
 
             const filteredMenu = useMemo(() => {
-                return MENU_DATA.filter(item => {
+                return menuData.filter(item => {
                     const matchesCategory = activeCategory === "Semua" || item.category === activeCategory;
                     return matchesCategory && item.name.toLowerCase().includes(searchTerm.toLowerCase());
                 });
-            }, [activeCategory, searchTerm]);
+            }, [menuData, activeCategory, searchTerm]);
 
             const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
 
@@ -391,7 +440,7 @@
                             </div>
  
                             <div className="flex gap-4 overflow-x-auto pb-12 no-scrollbar px-1">
-                                {CATEGORIES.map(cat => (
+                                {categories.map(cat => (
                                     <button 
                                         key={cat} 
                                         onClick={() => setActiveCategory(cat)} 

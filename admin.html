@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Tiwul Ayu Mbak Jannah</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/mbak%20jannah%20cake%20%26%20bakery.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#8B5E3C',
+                        accent: '#D4AF37',
+                        dark: '#2B2B2B',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { scroll-behavior: smooth; background: #FDF6EC; overflow-x: hidden; }
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0.04;
+            mix-blend-mode: multiply;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, rgba(253, 246, 236, 0) 70%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+        const { motion, AnimatePresence } = window.Motion;
+
+        const DEFAULT_CATEGORIES = ["Tiwul Jumbo", "Paket Hemat", "Wingko Babat", "Brownies Tiwul", "Bolen & Strudel", "Bolu"];
+
+        const Icon = ({ name, size = 20, className = "text-primary", strokeWidth = 2 }) => {
+            const icons = {
+                Plus: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                ),
+                LogOut: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                ),
+                Trash2: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+                    </svg>
+                ),
+                UploadCloud: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" />
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                    </svg>
+                ),
+                Key: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                    </svg>
+                ),
+                User: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                    </svg>
+                ),
+                AlertCircle: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                ),
+                CheckCircle: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} width={size} height={size}>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                ),
+                Loader: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={`animate-spin ${className}`} width={size} height={size}>
+                        <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+                    </svg>
+                )
+            };
+            return icons[name] || null;
+        };
+
+        function App() {
+            const [user, setUser] = useState(null);
+            const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+            
+            // Login States
+            const [loginEmail, setLoginEmail] = useState("");
+            const [loginPassword, setLoginPassword] = useState("");
+            const [authError, setAuthError] = useState("");
+            const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+            // Form States
+            const [nama, setNama] = useState("");
+            const [harga, setHarga] = useState("");
+            const [kategori, setKategori] = useState("");
+            const [kategoriKustom, setKategoriKustom] = useState("");
+            const [isKategoriKustom, setIsKategoriKustom] = useState(false);
+            const [deskripsi, setDeskripsi] = useState("");
+            const [foto, setFoto] = useState(null);
+            const [fotoPreview, setFotoPreview] = useState("");
+
+            // CRUD & UI States
+            const [menuItems, setMenuItems] = useState([]);
+            const [isLoading, setIsLoading] = useState(false);
+            const [actionMessage, setActionMessage] = useState(null); // { type: 'success' | 'error', text: '' }
+            const fileInputRef = useRef(null);
+
+            // Listen to auth state
+            useEffect(() => {
+                let unsubscribe = () => {};
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        unsubscribe = firebase.auth().onAuthStateChanged((currentUser) => {
+                            setUser(currentUser);
+                            setIsCheckingAuth(false);
+                        });
+                    } else {
+                        setIsCheckingAuth(false);
+                        setActionMessage({ type: "error", text: "Firebase SDK gagal dimuat. Cek file firebase-config.js Anda." });
+                    }
+                } catch (e) {
+                    console.error("Auth listener error:", e);
+                    setIsCheckingAuth(false);
+                }
+                return () => unsubscribe();
+            }, []);
+
+            // Real-time listener for current menus
+            useEffect(() => {
+                if (!user) return;
+                let unsubscribe = () => {};
+                try {
+                    const db = firebase.firestore();
+                    unsubscribe = db.collection("menu_makanan")
+                        .orderBy("created_at", "desc")
+                        .onSnapshot((snapshot) => {
+                            const items = [];
+                            snapshot.forEach((doc) => {
+                                items.push({ id: doc.id, ...doc.data() });
+                            });
+                            setMenuItems(items);
+                        }, (err) => {
+                            console.error("Gagal memuat menu:", err);
+                        });
+                } catch (e) {
+                    console.error("Firestore query error:", e);
+                }
+                return () => unsubscribe();
+            }, [user]);
+
+            const handleLogin = async (e) => {
+                e.preventDefault();
+                setAuthError("");
+                setIsLoggingIn(true);
+                try {
+                    await firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword);
+                } catch (err) {
+                    console.error(err);
+                    let errMsg = "Login gagal. Periksa kembali email & password Anda.";
+                    if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+                        errMsg = "Email atau password salah.";
+                    } else if (err.code === "auth/invalid-email") {
+                        errMsg = "Format email tidak valid.";
+                    }
+                    setAuthError(errMsg);
+                } finally {
+                    setIsLoggingIn(false);
+                }
+            };
+
+            const handleLogout = async () => {
+                try {
+                    await firebase.auth().signOut();
+                    // Clear states
+                    setNama("");
+                    setHarga("");
+                    setKategori("");
+                    setKategoriKustom("");
+                    setIsKategoriKustom(false);
+                    setDeskripsi("");
+                    setFoto(null);
+                    setFotoPreview("");
+                } catch (err) {
+                    console.error("Gagal logout:", err);
+                }
+            };
+
+            const handleFotoChange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        showToast("error", "Ukuran file terlalu besar! Maksimal 5MB.");
+                        return;
+                    }
+                    setFoto(file);
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setFotoPreview(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const showToast = (type, text) => {
+                setActionMessage({ type, text });
+                setTimeout(() => setActionMessage(null), 4000);
+            };
+
+            const handleSaveMenu = async (e) => {
+                e.preventDefault();
+                if (!nama || !harga || (!kategori && !kategoriKustom) || !foto) {
+                    showToast("error", "Harap isi semua kolom wajib dan unggah foto makanan.");
+                    return;
+                }
+
+                setIsLoading(true);
+                try {
+                    const finalCategory = isKategoriKustom ? kategoriKustom.trim() : kategori;
+                    
+                    // 1. Upload foto ke Firebase Storage
+                    const storage = firebase.storage();
+                    const fileExtension = foto.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExtension}`;
+                    const storageRef = storage.ref(`foto-menu/${fileName}`);
+                    
+                    const uploadTask = await storageRef.put(foto);
+                    const publicUrl = await uploadTask.ref.getDownloadURL();
+
+                    // 2. Insert data menu ke Firestore
+                    const db = firebase.firestore();
+                    await db.collection("menu_makanan").add({
+                        nama: nama.trim(),
+                        harga: Number(harga),
+                        category: finalCategory,
+                        deskripsi: deskripsi.trim(),
+                        foto_url: publicUrl,
+                        created_at: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    showToast("success", `Menu "${nama}" berhasil disimpan!`);
+                    
+                    // Reset Form
+                    setNama("");
+                    setHarga("");
+                    setKategori("");
+                    setKategoriKustom("");
+                    setIsKategoriKustom(false);
+                    setDeskripsi("");
+                    setFoto(null);
+                    setFotoPreview("");
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+
+                } catch (err) {
+                    console.error("Gagal menyimpan menu:", err);
+                    showToast("error", "Terjadi kesalahan saat menyimpan menu: " + err.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleDeleteMenu = async (item) => {
+                if (!confirm(`Apakah Anda yakin ingin menghapus menu "${item.nama}"?`)) return;
+
+                try {
+                    // 1. Hapus foto dari Firebase Storage jika itu URL Firebase
+                    if (item.foto_url && item.foto_url.includes("firebasestorage.googleapis.com")) {
+                        try {
+                            const storageRef = firebase.storage().refFromURL(item.foto_url);
+                            await storageRef.delete();
+                        } catch (storageErr) {
+                            console.warn("Foto di storage tidak ditemukan atau gagal dihapus:", storageErr);
+                        }
+                    }
+
+                    // 2. Hapus dokumen di Firestore
+                    const db = firebase.firestore();
+                    await db.collection("menu_makanan").doc(item.id).delete();
+                    
+                    showToast("success", `Menu "${item.nama}" berhasil dihapus.`);
+                } catch (err) {
+                    console.error("Gagal menghapus menu:", err);
+                    showToast("error", "Gagal menghapus menu: " + err.message);
+                }
+            };
+
+            // Loading screen while checking auth status
+            if (isCheckingAuth) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-[#FDF6EC]">
+                        <div className="text-center space-y-4">
+                            <Icon name="Loader" size={48} className="text-primary mx-auto" />
+                            <p className="font-serif text-lg text-primary tracking-wide">Memeriksa Autentikasi...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen relative font-sans text-dark overflow-x-hidden">
+                    <div className="grain-overlay" />
+                    <div className="hero-gradient fixed inset-0 pointer-events-none" />
+
+                    {/* Toast Notification */}
+                    <AnimatePresence>
+                        {actionMessage && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: -50 }}
+                                animate={{ opacity: 1, y: 20 }}
+                                exit={{ opacity: 0, y: -50 }}
+                                className={`fixed top-4 left-1/2 -translate-x-1/2 z-[300] px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 font-semibold text-sm max-w-md ${
+                                    actionMessage.type === 'success' ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-red-50 border border-red-200 text-red-800'
+                                }`}
+                            >
+                                <Icon name={actionMessage.type === 'success' ? 'CheckCircle' : 'AlertCircle'} size={20} className={actionMessage.type === 'success' ? 'text-emerald-600' : 'text-red-600'} />
+                                <span>{actionMessage.text}</span>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {!user ? (
+                        /* LOGIN CONTAINER */
+                        <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                                className="w-full max-w-md bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 border border-white shadow-2xl shadow-primary/5"
+                            >
+                                <div className="text-center mb-8">
+                                    <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white mx-auto mb-4 shadow-xl border border-white/20 overflow-hidden">
+                                        <img src="assets/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                                    </div>
+                                    <h2 className="font-serif text-3xl text-dark">Login Admin</h2>
+                                    <p className="text-xs text-primary/70 tracking-widest font-black uppercase mt-2">Mbak Jannah Cake & Bakery</p>
+                                </div>
+
+                                {authError && (
+                                    <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2">
+                                        <Icon name="AlertCircle" size={16} className="text-red-500 shrink-0" />
+                                        <span>{authError}</span>
+                                    </div>
+                                )}
+
+                                <form onSubmit={handleLogin} className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-dark/70 uppercase tracking-wider block">Email</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40">
+                                                <Icon name="User" size={18} />
+                                            </div>
+                                            <input 
+                                                type="email" 
+                                                required
+                                                placeholder="admin@email.com" 
+                                                value={loginEmail}
+                                                onChange={(e) => setLoginEmail(e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-dark/70 uppercase tracking-wider block">Password</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40">
+                                                <Icon name="Key" size={18} />
+                                            </div>
+                                            <input 
+                                                type="password" 
+                                                required
+                                                placeholder="••••••••" 
+                                                value={loginPassword}
+                                                onChange={(e) => setLoginPassword(e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        type="submit" 
+                                        disabled={isLoggingIn}
+                                        className="w-full py-4 bg-primary text-white rounded-2xl font-bold hover:bg-dark transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:pointer-events-none"
+                                    >
+                                        {isLoggingIn ? <Icon name="Loader" size={18} className="text-white" /> : "Masuk"}
+                                    </button>
+                                </form>
+                            </motion.div>
+                        </div>
+                    ) : (
+                        /* DASHBOARD / CRUD CONTAINER */
+                        <div className="relative z-10">
+                            {/* Header */}
+                            <nav className="w-full bg-white/70 backdrop-blur-2xl py-4 border-b border-primary/5 sticky top-0 z-[100] shadow-sm">
+                                <div className="container mx-auto px-6 flex justify-between items-center">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white border border-white/20 overflow-hidden">
+                                            <img src="assets/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-serif text-lg leading-none text-dark">Panel Admin</span>
+                                            <span className="text-[9px] tracking-widest text-primary font-bold uppercase mt-1">Mbak Jannah Cake & Bakery</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs text-dark/60 font-medium hidden sm:inline">{user.email}</span>
+                                        <button 
+                                            onClick={handleLogout}
+                                            className="px-4 py-2.5 rounded-xl border border-red-200 text-red-600 bg-red-50/50 hover:bg-red-50 hover:text-red-700 font-bold text-xs flex items-center gap-2 transition-all"
+                                        >
+                                            <Icon name="LogOut" size={14} className="text-red-600" /> Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            </nav>
+
+                            <div className="container mx-auto px-6 py-10">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                                    
+                                    {/* FORM PANEL (Lg: 5 columns) */}
+                                    <div className="lg:col-span-5 space-y-6">
+                                        <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] p-6 border border-white shadow-xl shadow-primary/5">
+                                            <h3 className="font-serif text-2xl text-dark mb-6">Tambah Menu Baru</h3>
+                                            
+                                            <form onSubmit={handleSaveMenu} className="space-y-5">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-dark/70 uppercase tracking-wider block">Nama Menu *</label>
+                                                    <input 
+                                                        type="text" 
+                                                        required
+                                                        placeholder="Contoh: Tiwul Keju Susu" 
+                                                        value={nama}
+                                                        onChange={(e) => setNama(e.target.value)}
+                                                        className="w-full px-4 py-3 rounded-xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5"
+                                                    />
+                                                </div>
+
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-dark/70 uppercase tracking-wider block">Harga (Rp) *</label>
+                                                    <input 
+                                                        type="number" 
+                                                        required
+                                                        placeholder="Contoh: 28000" 
+                                                        value={harga}
+                                                        onChange={(e) => setHarga(e.target.value)}
+                                                        className="w-full px-4 py-3 rounded-xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5"
+                                                    />
+                                                </div>
+
+                                                <div className="space-y-1.5">
+                                                    <div className="flex justify-between items-center">
+                                                        <label className="text-[11px] font-bold text-dark/70 uppercase tracking-wider block">Kategori *</label>
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => setIsKategoriKustom(!isKategoriKustom)}
+                                                            className="text-[10px] font-bold text-primary hover:underline"
+                                                        >
+                                                            {isKategoriKustom ? "Pilih Kategori Bawaan" : "Tulis Kategori Kustom"}
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    {isKategoriKustom ? (
+                                                        <input 
+                                                            type="text" 
+                                                            required
+                                                            placeholder="Contoh: Kue Kering" 
+                                                            value={kategoriKustom}
+                                                            onChange={(e) => setKategoriKustom(e.target.value)}
+                                                            className="w-full px-4 py-3 rounded-xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5"
+                                                        />
+                                                    ) : (
+                                                        <select 
+                                                            required
+                                                            value={kategori}
+                                                            onChange={(e) => setKategori(e.target.value)}
+                                                            className="w-full px-4 py-3 rounded-xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5 text-dark"
+                                                        >
+                                                            <option value="">-- Pilih Kategori --</option>
+                                                            {DEFAULT_CATEGORIES.map(cat => (
+                                                                <option key={cat} value={cat}>{cat}</option>
+                                                            ))}
+                                                        </select>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-dark/70 uppercase tracking-wider block">Deskripsi Menu (Opsional)</label>
+                                                    <textarea 
+                                                        placeholder="Tulis deskripsi makanan..." 
+                                                        value={deskripsi}
+                                                        onChange={(e) => setDeskripsi(e.target.value)}
+                                                        rows="3"
+                                                        className="w-full px-4 py-3 rounded-xl bg-white border border-primary/10 focus:border-primary/30 focus:outline-none text-sm transition-all focus:ring-4 focus:ring-primary/5 resize-none"
+                                                    />
+                                                </div>
+
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-dark/70 uppercase tracking-wider block">Foto Menu * (Ukuran maksimal 5MB)</label>
+                                                    <div 
+                                                        onClick={() => fileInputRef.current.click()}
+                                                        className="border-2 border-dashed border-primary/20 hover:border-primary/40 rounded-2xl p-4 text-center cursor-pointer transition-colors bg-white/50 flex flex-col items-center justify-center gap-2 min-h-32"
+                                                    >
+                                                        <input 
+                                                            type="file" 
+                                                            ref={fileInputRef}
+                                                            accept="image/*"
+                                                            onChange={handleFotoChange}
+                                                            className="hidden"
+                                                        />
+                                                        {fotoPreview ? (
+                                                            <div className="relative w-full max-h-36 overflow-hidden rounded-xl">
+                                                                <img src={fotoPreview} alt="Preview" className="w-full h-full object-cover max-h-36" />
+                                                                <div className="absolute inset-0 bg-dark/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                                                    <span className="bg-white/90 text-dark px-3 py-1.5 rounded-full text-xs font-bold shadow">Ganti Foto</span>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                <Icon name="UploadCloud" size={32} className="text-primary/60" />
+                                                                <p className="text-xs text-dark/70 font-semibold">Pilih atau Seret Foto Makanan</p>
+                                                                <p className="text-[10px] text-dark/40">Mendukung JPG, JPEG, PNG, WEBP</p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <button 
+                                                    type="submit" 
+                                                    disabled={isLoading}
+                                                    className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-dark transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:pointer-events-none"
+                                                >
+                                                    {isLoading ? (
+                                                        <>
+                                                            <Icon name="Loader" size={18} className="text-white" />
+                                                            <span>Mengunggah & Menyimpan...</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Icon name="Plus" size={18} className="text-white" />
+                                                            <span>Simpan Menu</span>
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    {/* LIST PANEL (Lg: 7 columns) */}
+                                    <div className="lg:col-span-7 space-y-6">
+                                        <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] p-6 border border-white shadow-xl shadow-primary/5">
+                                            <div className="flex justify-between items-center mb-6">
+                                                <h3 className="font-serif text-2xl text-dark">Daftar Menu Aktif</h3>
+                                                <span className="text-xs font-bold bg-primary/10 text-primary px-3.5 py-1.5 rounded-full">{menuItems.length} Produk</span>
+                                            </div>
+
+                                            {menuItems.length === 0 ? (
+                                                <div className="py-20 text-center text-dark/40 flex flex-col items-center justify-center gap-3">
+                                                    <Icon name="Loader" size={40} className="text-primary/30" />
+                                                    <p className="font-semibold text-sm">Belum ada menu di database.</p>
+                                                    <p className="text-xs">Gunakan form di samping untuk menambahkan menu pertama.</p>
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-1 no-scrollbar">
+                                                    {menuItems.map(item => (
+                                                        <motion.div 
+                                                            layout
+                                                            key={item.id}
+                                                            className="bg-white p-4 rounded-3xl border border-primary/5 flex gap-4 items-center group relative shadow-sm hover:shadow-md transition-shadow"
+                                                        >
+                                                            <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-primary/10 border border-primary/5">
+                                                                <img src={item.foto_url} alt={item.nama} className="w-full h-full object-cover" />
+                                                            </div>
+                                                            <div className="flex-grow min-w-0 pr-10">
+                                                                <span className="text-[9px] text-primary font-bold uppercase tracking-wider block">{item.category}</span>
+                                                                <h4 className="font-bold text-sm text-dark truncate mt-0.5" title={item.nama}>{item.nama}</h4>
+                                                                <p className="text-xs text-primary font-black mt-1">Rp {Number(item.harga).toLocaleString('id-ID')}</p>
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => handleDeleteMenu(item)}
+                                                                className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
+                                                                title="Hapus Menu"
+                                                            >
+                                                                <Icon name="Trash2" size={16} className="text-red-500" />
+                                                            </button>
+                                                        </motion.div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
